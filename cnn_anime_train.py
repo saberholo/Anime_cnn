@@ -113,3 +113,7 @@ op9_SPP_array = sess.run(SPP_layer(SPP_input, 3, pool_type='max'))    # SPP laye
 print(sess.run(op9_SPP, feed_dict={op9_SPP: op9_SPP_array}))
     # except tf.errors.OutOfRangeError:
     #     break
+    
+    
+    
+    。。。。。
