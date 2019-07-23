@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow.contrib.layers import fully_connected
 import numpy as np
 import h5py
 import os
@@ -85,9 +86,22 @@ op8_relu = tf.compat.v1.nn.relu(op8_conv)
 
 # 9th SPP layer
 # op9_SPP = SPP_layer(op8_relu, 3, pool_type='max')
+op9_SPP = tf.placeholder(tf.float32, shape=[1, 21504])
 
 # 10th fully connected layer
-op9_SPP = tf.placeholder(tf.float32, shape=[None, ])
+op10_fc = fully_connected(op9_SPP,
+                          num_outputs=20,
+                          activation_fn=tf.nn.relu)
+
+# 11th fully connected layer
+op11_fc = fully_connected(op10_fc,
+                          num_outputs=10,
+                          activation_fn=tf.nn.relu)
+
+# 12th final layer
+op12_fc = fully_connected(op11_fc,
+                          num_outputs=1,
+                          activation_fn=tf.nn.sigmoid)
 
 
 # Tensorboard
@@ -104,12 +118,13 @@ iterator = dataset_pair.make_initializable_iterator()
 next_img = iterator.get_next()
 
 print(sess.run(iterator.initializer))
-# while True:
-#     try:
-input = sess.run(next_img)
-SPP_input = sess.run(op8_relu, feed_dict={x: [input[0]]})
-op9_SPP_array = sess.run(SPP_layer(SPP_input, 3, pool_type='max'))    # SPP layer
+while True:
+    try:
 
-print(sess.run(op9_SPP, feed_dict={op9_SPP: op9_SPP_array}))
-    # except tf.errors.OutOfRangeError:
-    #     break
+        input = sess.run(next_img)
+        SPP_input = sess.run(op8_relu, feed_dict={x: [input[0]]})
+        op9_SPP_array = sess.run(SPP_layer(SPP_input, 3, pool_type='max'))    # SPP layer
+
+        print(sess.run(op12_fc, feed_dict={op9_SPP: op9_SPP_array}))
+    except tf.errors.OutOfRangeError:
+        break

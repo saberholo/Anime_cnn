@@ -26,7 +26,6 @@ def SPP_layer(input, levels=3, name='SPP_layer', pool_type='max'):
 
             else:
                 x_flatten = tf.concat((x_flatten, pool), axis=1)
-        x_flatten = x_flatten[0]
         print("SPP layer shape:\t", x_flatten.get_shape().as_list())
 
 
