@@ -84,19 +84,16 @@ op8_conv = tf.compat.v1.nn.conv2d(op7_relu, filter, strides=[1, 2, 2, 1], paddin
 op8_relu = tf.compat.v1.nn.relu(op8_conv)
 
 # 9th SPP layer
-op9_SPP = SPP_layer(op8_relu, 3, pool_type='max')
+# op9_SPP = SPP_layer(op8_relu, 3, pool_type='max')
 
 # 10th fully connected layer
-
-
+op9_SPP = tf.placeholder(tf.float32, shape=[None, ])
 
 
 # Tensorboard
 # writer = tf.summary.FileWriter('.')
 # writer.add_graph(tf.get_default_graph())
 # writer.flush()
-
-
 
 
 # Session ----------------------------------------------------------------------------------------------------------
@@ -107,15 +104,12 @@ iterator = dataset_pair.make_initializable_iterator()
 next_img = iterator.get_next()
 
 print(sess.run(iterator.initializer))
-while True:
-    try:
-        input = sess.run(next_img)
-        SPP_input = sess.run(op8_relu, feed_dict={x: [input[0]]})
-        print(sess.run(SPP_layer(SPP_input, 3, pool_type='max')))
-    except tf.errors.OutOfRangeError:
-        break
+# while True:
+#     try:
+input = sess.run(next_img)
+SPP_input = sess.run(op8_relu, feed_dict={x: [input[0]]})
+op9_SPP_array = sess.run(SPP_layer(SPP_input, 3, pool_type='max'))    # SPP layer
 
-
-
-
-
+print(sess.run(op9_SPP, feed_dict={op9_SPP: op9_SPP_array}))
+    # except tf.errors.OutOfRangeError:
+    #     break

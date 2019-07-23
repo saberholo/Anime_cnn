@@ -4,7 +4,7 @@ import tensorflow as tf
 
 def SPP_layer(input, levels=3, name='SPP_layer', pool_type='max'):
 
-    shape = input.get_shape().as_list()
+    shape = input.shape
 
     with tf.variable_scope(name):
 
@@ -26,12 +26,12 @@ def SPP_layer(input, levels=3, name='SPP_layer', pool_type='max'):
 
             else:
                 x_flatten = tf.concat((x_flatten, pool), axis=1)
-
+        x_flatten = x_flatten[0]
         print("SPP layer shape:\t", x_flatten.get_shape().as_list())
 
 
     return x_flatten
 
 
-x = tf.ones((4,16,16,3))
-x_sppl = SPP_layer(x,3)
+# x = tf.ones((4, 128, 128, 3))
+# x_sppl = SPP_layer(x, 3)
